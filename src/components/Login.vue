@@ -35,7 +35,9 @@
           <el-button class="btn" type="primary" @click="login" round plain
             >连接！</el-button
           >
-          <el-button class="btn" type="info" round plain>关于</el-button>
+          <el-button class="btn" type="info" round plain @click="toAbout"
+            >关于</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
@@ -78,6 +80,10 @@ export default {
         return this.$message.success(res.msg);
       });
     },
+
+    toAbout() {
+      window.open("https://blog.2333332.xyz/2021/02/16/remote-clipboard");
+    },
   },
 };
 </script>
@@ -87,7 +93,8 @@ export default {
   position: absolute;
   width: 50%;
   max-width: 500px;
-  max-height: 350px;
+  max-height: 280px;
+  min-height: 230px;
   border-radius: 5px;
   height: 50%;
   top: 50%;
@@ -110,6 +117,11 @@ export default {
       width: 100;
       border-radius: 50%;
       background-color: rgba(238, 238, 238, 0.55);
+      transition: All 0.8s ease-in-out;
+    }
+
+    img:hover {
+      transform: rotate(360deg);
     }
   }
 }
