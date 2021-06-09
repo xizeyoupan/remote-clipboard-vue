@@ -1,6 +1,6 @@
 import axios from "axios";
 import qs from "qs";
-const baseURL = "http://127.0.0.1:" + (process.env.BOOT_SERVER_PORT || "8233");
+const baseURL = process.env.VUE_APP_TEST_URL || process.env.VUE_APP_PRODUCTION_URL;
 const timeout = 3000;
 const headers = { "Content-Type": "application/x-www-form-urlencoded" };
 export default {
