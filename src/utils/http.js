@@ -18,7 +18,6 @@ export default {
             url: `${baseURL}${url}`,
             data: qs.stringify(data),
             timeout: timeout,
-
         });
     }, delete(url, data) {
         return axios({
@@ -34,7 +33,6 @@ export default {
             url: `${baseURL}${url}`,
             params: params,
             timeout: timeout,
-
         });
     }
 }

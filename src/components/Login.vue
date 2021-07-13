@@ -77,6 +77,7 @@ export default {
         const { data: res } = await this.$http.post("/user", this.loginForm);
         if (res.code === -1) return this.$message.error(res.msg);
         sessionStorage.setItem('token',res.data.token);
+        sessionStorage.setItem('username',this.loginForm.username);
         this.$router.push('/board');
         return this.$message.success(res.msg);
       });
