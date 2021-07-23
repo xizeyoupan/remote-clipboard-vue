@@ -9,7 +9,7 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <clip-btn-bar :clip="clip"></clip-btn-bar>
+        <clip-btn-bar :clip="clip" v-on="$listeners"></clip-btn-bar>
       </el-col>
     </el-row>
   </div>
@@ -24,7 +24,7 @@ import ClipImg from "@/components/clips/ClipImg";
 export default {
   name: "ClipDiv",
   components: {ClipBtnBar, ClipFile, ClipImg, ClipText},
-  props: ['clip']
+  props: ['clip'],
 
 }
 </script>

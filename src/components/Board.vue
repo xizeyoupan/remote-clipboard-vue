@@ -4,17 +4,28 @@
       <el-row :gutter="20">
         <el-col :span="18">
           <div>
-            <el-button type="warning">清除全部</el-button>
+            <el-button
+                type="warning"
+                @click="clear_all"
+            >清除全部
+            </el-button>
+
             <el-button type="danger">断开连接</el-button>
           </div>
         </el-col>
         <el-col :span="6">
-          <div>12</div>
+          <div><span>当前用户共有{{ data.length }}条clip(s).</span></div>
         </el-col>
       </el-row>
     </div>
 
-    <clip-div v-for="(clip,index) in data" :clip="clip" :key="index"></clip-div>
+    <clip-div
+        class="clip"
+        v-for="(clip,index) in data"
+        :clip="clip"
+        :key="index"
+        @delete-clip="delete_clip">
+    </clip-div>
 
     <el-row :gutter="20">
       <el-col :span="20">
@@ -35,11 +46,12 @@
               circle>
           </el-button>
           <el-button
-              @click="upload_files"
+              @click="$refs.uploadHiddenInput.click()"
               type="primary"
               icon="el-icon-upload2"
               circle>
           </el-button>
+          <input ref="uploadHiddenInput" type="file" @change="upload_files" style="display: none;">
         </div>
       </el-col>
     </el-row>
@@ -65,6 +77,7 @@ export default {
       data: [],
     };
   },
+  watch: {},
 
   computed: {},
 
@@ -73,27 +86,39 @@ export default {
     async upload_text_or_img() {
       this.data.push(await utils.upload_text_or_img());
     },
+
+    delete_clip(clip) {
+      this.data = this.data.filter((item) => {
+        return item.builtTime !== clip.builtTime;
+      })
+    },
+
+    clear_all() {
+      this.data = this.data.filter((item) => {
+        return item.blocked === "blocked";
+      })
+    },
+
+
     sync_clips() {
-      console.log("update")
+      console.log("update");
     },
 
+    upload_files(event) {
+      // console.log(this.$refs.uploadHiddenInput.value)
+      // console.log(Boolean(event.target.files), event.target.files)
 
-    toggle_btn_type(e) {
-      if (e.blocked === "released") {
-        e.blocked = "blocked";
-      } else {
-        e.blocked = "released";
+      if (event.target.files.length) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result;
+          this.data.push(utils.gen_clip(result, file.type));
+
+        }
+        reader.readAsArrayBuffer(file);
       }
-    },
 
-    scroll2end() {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth"
-      });
-    },
-
-    async upload_files() {
 
     },
 
@@ -103,6 +128,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
+span {
+  font-size: large;
+  font-family: 'Helvetica Neue', 'Helvetica', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'Arial', 'sans-serif';
+}
+
 .board_container {
   position: absolute;
   width: 84%;

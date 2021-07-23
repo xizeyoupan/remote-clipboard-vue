@@ -1,16 +1,25 @@
 <template>
   <div>
     <el-button icon="el-icon-refresh" circle></el-button>
-    <el-button type="warning" icon="el-icon-delete" circle></el-button>
+    <el-button
+        type="warning"
+        icon="el-icon-delete"
+        @click="$emit('delete-clip',clip)"
+        circle>
+    </el-button>
+
     <el-button
         :type="show_btn_type.type"
         :icon="show_btn_type.icon"
         @click="toggle_btn_type()"
-        circle></el-button>
+        circle>
+    </el-button>
+
     <el-button
         type="primary"
         icon="el-icon-copy-document"
-        circle></el-button>
+        circle>
+    </el-button>
   </div>
 </template>
 

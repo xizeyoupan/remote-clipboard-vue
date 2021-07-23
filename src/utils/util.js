@@ -62,5 +62,6 @@ export {
     ab2url,
     insertStr2ab,
     upload_text_or_img,
-    ab2str
+    ab2str,
+    gen_clip,
 }
