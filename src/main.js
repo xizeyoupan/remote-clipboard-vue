@@ -3,7 +3,21 @@ import App from './App.vue'
 import router from './router'
 import './assets/css/global.css'
 import 'element-ui/lib/theme-chalk/index.css'
-import { Button, Form, FormItem, Input, Message, Container, Main, Header, Aside, Footer, Row, Col } from 'element-ui'
+import {
+    Image,
+    Button,
+    Form,
+    FormItem,
+    Input,
+    Message,
+    Container,
+    Main,
+    Header,
+    Aside,
+    Footer,
+    Row,
+    Col
+} from 'element-ui'
 import http from './utils/http'
 
 Vue.prototype.$http = http;
@@ -20,11 +34,11 @@ Vue.use(Aside)
 Vue.use(Footer)
 Vue.use(Col)
 Vue.use(Row)
+Vue.use(Image)
 Vue.prototype.$message = Message
 
-
 new Vue({
-  router,
-  render: h => h(App)
+    router,
+    render: h => h(App)
 }).$mount('#app')
 

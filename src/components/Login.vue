@@ -116,7 +116,7 @@ export default {
     transform: translate(-50%, -50%);
     img {
       height: 100%;
-      width: 100;
+      width: 100%;
       border-radius: 50%;
       background-color: rgba(238, 238, 238, 0.55);
       transition: All 0.8s ease-in-out;

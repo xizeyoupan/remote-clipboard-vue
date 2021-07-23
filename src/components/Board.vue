@@ -14,36 +14,7 @@
       </el-row>
     </div>
 
-    <div class="clip" v-for="e in data" :key="e.builtTime">
-      <el-row :gutter="20">
-        <el-col :span="20">
-          <div>
-            <el-input v-if="e.contentType==='text/plain'"
-                      type="textarea"
-                      autosize
-                      placeholder="请输入内容"
-                      :value="ab2str(e.buffer)"
-                      @input="i=>insertStr2ab(e,i)">
-            </el-input>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div>
-            <el-button icon="el-icon-refresh" circle></el-button>
-            <el-button type="warning" icon="el-icon-delete" circle></el-button>
-            <el-button
-                :type="show_btn_type(e).type"
-                :icon="show_btn_type(e).icon"
-                @click="toggle_btn_type(e)"
-                circle></el-button>
-            <el-button
-                type="primary"
-                icon="el-icon-copy-document"
-                circle></el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+    <clip-div v-for="(clip,index) in data" :clip="clip" :key="index"></clip-div>
 
     <el-row :gutter="20">
       <el-col :span="20">
@@ -76,7 +47,11 @@
 </template>
 
 <script>
+import ClipDiv from "@/components/clips/ClipDiv";
+import * as utils from '../utils/util'
+
 export default {
+  components: {ClipDiv},
   created() {
     this.sync_clips();
     const timeout = 10000;
@@ -94,81 +69,35 @@ export default {
   computed: {},
 
   methods: {
-    insertStr2ab(e, str) {
-      e.buffer = this.str2ab(str);
-    },
 
-    ab2str(ab) {
-      return new TextDecoder().decode(ab);
+    async upload_text_or_img() {
+      this.data.push(await utils.upload_text_or_img());
     },
-
-    str2ab(str) {
-      return new TextEncoder().encode(str).buffer;
-    },
-
     sync_clips() {
       console.log("update")
     },
 
-    show_btn_type(e) {
-      let res = {};
-      if (e.blocked === "released") {
-        res.type = "info";
-        res.icon = "el-icon-unlock";
-      } else {
-        res.type = "success";
-        res.icon = "el-icon-lock";
-      }
-
-      return res;
-    },
 
     toggle_btn_type(e) {
       if (e.blocked === "released") {
-        this.$set(e, "blocked", "blocked");
+        e.blocked = "blocked";
       } else {
-        this.$set(e, "blocked", "released");
+        e.blocked = "released";
       }
+    },
+
+    scroll2end() {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth"
+      });
     },
 
     async upload_files() {
 
     },
 
-    async upload_text_or_img() {
-      const clipboardItems = await navigator.clipboard.read();
-      let new_clip = {};
-      for (const clipboardItem of clipboardItems) {
-        let is_img = false;
 
-        for (const type of clipboardItem.types) {
-          if (type.includes("image")) {
-            is_img = true;
-            new_clip.buffer = await (await clipboardItem.getType(type)).arrayBuffer();
-            new_clip.contentType = type;
-            break;
-          }
-        }
-        if (is_img) {
-        } else if (clipboardItem.types.includes("text/plain")) {
-          new_clip.contentType = "text/plain";
-          let clip_text = await (await clipboardItem.getType("text/plain")).text();
-          new_clip.buffer = this.str2ab(clip_text);
-        } else {
-          // console.log(clipboardItem)
-          this.$message.error("该类型不支持粘贴上传，请上传文件(*￣3￣)╭");
-          return;
-        }
-
-        new_clip.blocked = "released";
-        new_clip.username = sessionStorage.getItem("username");
-        new_clip.builtTime = new Date().getTime();
-        new_clip.changeTime = new Date().getTime();
-
-        this.data.push(new_clip);
-
-      }
-    }
   },
 };
 </script>
