@@ -24,7 +24,9 @@
         v-for="(clip,index) in data"
         :clip="clip"
         :key="index"
-        @delete-clip="delete_clip">
+        ref="clips"
+        @delete-clip="delete_clip"
+        @copy-or-download="copy_or_download(clip,index)">
     </clip-div>
 
     <el-row :gutter="20">
@@ -84,7 +86,10 @@ export default {
   methods: {
 
     async upload_text_or_img() {
-      this.data.push(await utils.upload_text_or_img());
+      const clip = await utils.upload_text_or_img(() => {
+        this.$message.error("该类型不支持粘贴上传，请上传文件(*￣3￣)╭");
+      });
+      if (clip) this.data.push(clip);
     },
 
     delete_clip(clip) {
@@ -97,6 +102,34 @@ export default {
       this.data = this.data.filter((item) => {
         return item.blocked === "blocked";
       })
+    },
+
+    async copy_or_download(clip, index) {
+      try {
+        if (clip.contentType === 'text/plain') {
+          await navigator.clipboard.writeText(utils.ab2str(clip.buffer));
+          this.$message.success(`复制文本成功❤`);
+
+        } else if (clip.contentType.includes('image')) {
+          const uri = this.$refs.clips[index].$el.querySelector('img').getAttribute('src');
+          const response = await fetch(uri);
+          const blob = await response.blob();
+          const item = new ClipboardItem({[clip.contentType]: blob});
+          await navigator.clipboard.write([item]);
+          this.$message.success(`复制图片成功💙`);
+
+        } else {
+          const blob = new Blob([clip.buffer], {type: clip.contentType});
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = clip.filename;
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+
     },
 
 
@@ -113,7 +146,7 @@ export default {
         const reader = new FileReader();
         reader.onload = () => {
           const result = reader.result;
-          this.data.push(utils.gen_clip(result, file.type));
+          this.data.push(utils.gen_clip(result, file.type, file.name));
 
         }
         reader.readAsArrayBuffer(file);

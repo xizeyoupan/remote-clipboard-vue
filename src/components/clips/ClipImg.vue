@@ -16,6 +16,10 @@ export default {
   name: "ClipImg",
   methods: {
     ab2url: utils.ab2url,
+  },
+  beforeDestroy() {
+    const uri = this.$el.querySelector('img').getAttribute('src');
+    URL.revokeObjectURL(uri)
   }
 }
 </script>

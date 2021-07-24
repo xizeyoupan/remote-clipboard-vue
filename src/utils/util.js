@@ -15,13 +15,13 @@ const ab2url = (ab, type) => {
     return URL.createObjectURL(blob);
 };
 
-const upload_text_or_img = async () => {
+const upload_text_or_img = async (callback) => {
     let clipboardItems, new_clip, buffer, contentType;
 
     try {
         clipboardItems = await navigator.clipboard.read();
     } catch (e) {
-        this.$message.error("该类型不支持粘贴上传，请上传文件(*￣3￣)╭");
+        callback();
         return;
     }
 
@@ -47,14 +47,15 @@ const upload_text_or_img = async () => {
     }
 };
 
-const gen_clip = (ab, contentType) => {
+const gen_clip = (ab, contentType, filename = '') => {
     let new_clip = {};
     new_clip.buffer = ab;
-    new_clip.contentType = contentType;
+    new_clip.contentType = contentType ? contentType : 'application/octet-stream';
     new_clip.blocked = "released";
     new_clip.username = sessionStorage.getItem("username");
     new_clip.builtTime = new Date().getTime();
     new_clip.changeTime = new_clip.builtTime;
+    new_clip.filename = filename;
     return new_clip;
 }
 

@@ -18,6 +18,7 @@
     <el-button
         type="primary"
         icon="el-icon-copy-document"
+        @click="$emit('copy-or-download',clip)"
         circle>
     </el-button>
   </div>
