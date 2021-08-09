@@ -40,7 +40,11 @@
       </el-col>
       <el-col :span="4">
         <div>
-          <el-button icon="el-icon-check" circle></el-button>
+          <el-button
+              icon="el-icon-check"
+              circle
+              @click="gen_new_clip">
+          </el-button>
           <el-button
               @click="upload_text_or_img"
               type="info"
@@ -84,6 +88,15 @@ export default {
   computed: {},
 
   methods: {
+
+    gen_new_clip() {
+      if (this.new_clip_text) {
+        this.data.push(utils.gen_clip(utils.str2ab(this.new_clip_text), 'text/plain'));
+        this.new_clip_text = ``;
+      } else {
+        this.$message.info(`先在文本框里输入什么东西plzzzzzzzzzzzzzz❕`);
+      }
+    },
 
     async upload_text_or_img() {
       const clip = await utils.upload_text_or_img(() => {

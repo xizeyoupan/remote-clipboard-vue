@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button icon="el-icon-refresh" circle></el-button>
+
     <el-button
         type="warning"
         icon="el-icon-delete"
@@ -11,7 +11,7 @@
     <el-button
         :type="show_btn_type.type"
         :icon="show_btn_type.icon"
-        @click="toggle_btn_type()"
+        @click="toggle_btn_type"
         circle>
     </el-button>
 
@@ -20,6 +20,12 @@
         icon="el-icon-copy-document"
         @click="$emit('copy-or-download',clip)"
         circle>
+    </el-button>
+
+    <el-button
+        icon="el-icon-refresh"
+        circle
+        v-if="clip.contentType===`text/plain`">
     </el-button>
   </div>
 </template>

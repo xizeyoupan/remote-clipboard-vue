@@ -4,6 +4,7 @@ const ab2str = (ab) => {
 
 const insertStr2ab = (e, str) => {
     e.buffer = str2ab(str);
+    e.changeTime = new Date().getTime();
 };
 
 const str2ab = (str) => {
@@ -65,4 +66,5 @@ export {
     upload_text_or_img,
     ab2str,
     gen_clip,
+    str2ab,
 }

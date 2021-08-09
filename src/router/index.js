@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
       next('/board');
     }
     next();
-    return;
+
   } else if (to.path === '/board') {
     if (!token) {
       next('/login');
