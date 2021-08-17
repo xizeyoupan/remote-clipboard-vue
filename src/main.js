@@ -16,11 +16,13 @@ import {
     Aside,
     Footer,
     Row,
-    Col
+    Col,
+    ButtonGroup,
+    MessageBox,
 } from 'element-ui'
-import http from './utils/http'
+import {request} from './utils/http'
 
-Vue.prototype.$http = http;
+Vue.prototype.$http = request;
 Vue.config.productionTip = false
 
 Vue.use(Button)
@@ -35,10 +37,13 @@ Vue.use(Footer)
 Vue.use(Col)
 Vue.use(Row)
 Vue.use(Image)
+Vue.use(ButtonGroup)
 Vue.prototype.$message = Message
+Vue.prototype.$msgbox = MessageBox
 
 new Vue({
+    el: '#app',
     router,
     render: h => h(App)
-}).$mount('#app')
+})
 

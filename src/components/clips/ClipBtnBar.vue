@@ -1,37 +1,40 @@
 <template>
-  <div>
+  <el-button-group>
 
     <el-button
         type="warning"
         icon="el-icon-delete"
         @click="$emit('delete-clip',clip)"
-        circle>
+        size="medium"
+    >
     </el-button>
 
     <el-button
         :type="show_btn_type.type"
         :icon="show_btn_type.icon"
         @click="toggle_btn_type"
-        circle>
+        size="medium"
+    >
     </el-button>
 
     <el-button
         type="primary"
         icon="el-icon-copy-document"
         @click="$emit('copy-or-download',clip)"
-        circle>
+        size="medium"
+    >
     </el-button>
 
-    <el-button
-        icon="el-icon-refresh"
-        circle
-        v-if="clip.contentType===`text/plain`">
-    </el-button>
-  </div>
+<!--    <el-button-->
+<!--        icon="el-icon-refresh"-->
+<!--        v-if="clip.contentType===`text/plain`"-->
+<!--        size="medium"-->
+<!--    >-->
+<!--    </el-button>-->
+  </el-button-group>
 </template>
 
 <script>
-import * as util from '../../utils/util'
 
 export default {
   name: "ClipBtnBar",

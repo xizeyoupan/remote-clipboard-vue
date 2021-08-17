@@ -1,38 +1,36 @@
 import axios from "axios";
-import qs from "qs";
-const baseURL = process.env.VUE_APP_TEST_URL || process.env.VUE_APP_PRODUCTION_URL;
-const timeout = 3000;
-const headers = { "Content-Type": "application/x-www-form-urlencoded" };
-export default {
-    post(url, data) {
-        return axios({
-            method: "post",
-            url: `${baseURL}${url}`,
-            data: qs.stringify(data),
-            timeout: timeout,
-            headers: headers
-        });
-    }, put(url, data) {
-        return axios({
-            method: "put",
-            url: `${baseURL}${url}`,
-            data: qs.stringify(data),
-            timeout: timeout,
-        });
-    }, delete(url, data) {
-        return axios({
-            method: "delete",
-            url: `${baseURL}${url}`,
-            data: qs.stringify(data),
-            timeout: timeout,
-            headers: headers
-        });
-    }, get(url, params) {
-        return axios({
-            method: "get",
-            url: `${baseURL}${url}`,
-            params: params,
-            timeout: timeout,
-        });
+import router from "../router";
+
+
+axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL + "/api/v1";
+
+axios.interceptors.request.use(config => {
+
+    if (config.url !== "/api/v1/users") {
+        sessionStorage.getItem("token") && (config.headers.Authorization = "Bearer " + sessionStorage.getItem("token"));
     }
+
+    return config;
+}, error => {
+    Promise.reject(error);
+});
+
+axios.interceptors.response.use(response => {
+    return response;
+}, error => {
+    if (error.response.status === 401 && error.response.config.url !== "/api/v1/users") {
+        sessionStorage.clear();
+        router.push("/login");
+        return Promise.reject("登录已失效，请重新登录");
+    }
+    return Promise.reject(error);
+
+});
+
+
+const request = async (config) => {
+
+    return axios(config);
 }
+
+export {request};

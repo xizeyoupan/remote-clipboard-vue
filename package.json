@@ -10,8 +10,10 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.2",
-    "qs": "^6.10.1",
+    "event-source-polyfill": "^1.0.25",
+    "eventsource": "^1.1.0",
     "trianglify": "^4.1.1",
+    "uuidjs": "^4.2.8",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0"
   },

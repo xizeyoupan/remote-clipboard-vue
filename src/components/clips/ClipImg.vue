@@ -1,21 +1,21 @@
 <template>
   <el-image
-      :key="`img`+this.clip.builtTime"
-      :src="ab2url(this.clip.buffer,this.clip.contentType)"
+      :key="`img`+clip.modifyTime"
+      :src="ab2url(clip.buffer,clip.contentType)"
       fit="scale-down"
   >
   </el-image>
 </template>
 
 <script>
-import * as utils from '../../utils/util'
+const {ab2url} = require("@/utils/util");
 
 export default {
 
   props: ['clip'],
   name: "ClipImg",
   methods: {
-    ab2url: utils.ab2url,
+    ab2url
   },
   beforeDestroy() {
     const uri = this.$el.querySelector('img').getAttribute('src');

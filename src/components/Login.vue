@@ -3,42 +3,43 @@
     <div class="login_box">
       <!-- 头像区 -->
       <div class="avatar_box">
-        <img src="../assets/default_avatar.png" alt="" />
+        <img src="../assets/default_avatar.png" alt=""/>
       </div>
       <!-- 表单区 -->
       <el-form
-        :model="loginForm"
-        :rules="loginRules"
-        ref="loginFormRef"
-        label-width="0"
-        class="login_form"
+          :model="loginForm"
+          :rules="loginRules"
+          ref="loginFormRef"
+          label-width="0"
+          class="login_form"
       >
         <!-- 账号 -->
         <el-form-item prop="username">
           <el-input
-            v-model="loginForm.username"
-            placeholder="板号"
-            prefix-icon="el-icon-edit"
+              v-model="loginForm.username"
+              placeholder="板号"
+              prefix-icon="el-icon-edit"
           ></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
           <el-input
-            v-model="loginForm.password"
-            placeholder="密钥"
-            type="password"
-            prefix-icon="el-icon-lock"
+              v-model="loginForm.password"
+              placeholder="密钥"
+              type="password"
+              prefix-icon="el-icon-lock"
+              @keyup.enter.native="login"
           ></el-input>
         </el-form-item>
         <!-- 按钮 -->
-        <el-form-item class="login_btns">
-          <el-button class="btn" type="primary" @click="login" round plain
-            >连接！</el-button
-          >
-          <el-button class="btn" type="info" round plain @click="toAbout"
-            >关于</el-button
-          >
-        </el-form-item>
+        <el-button-group class="login_btns">
+          <el-button class="btn" type="primary" @click="login" plain size="medium"
+          >连接！
+          </el-button>
+          <el-button class="btn" type="info" plain @click="toAbout" size="medium"
+          >关于
+          </el-button>
+        </el-button-group>
       </el-form>
     </div>
   </div>
@@ -72,15 +73,31 @@ export default {
   },
   methods: {
     login() {
+      if (!localStorage.getItem("enterKey")) {
+        localStorage.setItem("enterKey", `true`);
+        this.toAbout();
+        return;
+      }
+
       this.$refs.loginFormRef.validate(async (valid) => {
-        if (!valid) return;
-        const { data: res } = await this.$http.post("/user", this.loginForm);
-        if (res.code === -1) return this.$message.error(res.msg);
-        sessionStorage.setItem('token',res.data.token);
-        sessionStorage.setItem('username',this.loginForm.username);
-        this.$router.push('/board');
-        return this.$message.success(res.msg);
-      });
+            if (!valid) return;
+            sessionStorage.clear();
+            try {
+              const res = await this.$http({method: "POST", url: "/users", data: this.loginForm});
+              sessionStorage.setItem("token", res.data.connection.token);
+              sessionStorage.setItem("username", res.data.connection.username);
+              const id = res.data.connection.id;
+              sessionStorage.setItem("connectionId", id);
+              await this.$router.push("/board");
+              return this.$message.success("找到板子了，你是连接这个板子的的第" + id + "位火伴！");
+            } catch (error) {
+              if (error.response.status === 401) {
+                error.message = "……隻能説，妳這個密碼錯了妳知道嗎ベΔ";
+                return this.$message.error(error.message);
+              }
+            }
+          }
+      );
     },
 
     toAbout() {
@@ -110,10 +127,11 @@ export default {
     border: 1px solid #eee;
     border-radius: 50%;
     padding: 5px;
-    box-shadow: 0, 0, 5px, #ddd;
+    box-shadow: 0 0 5px #ddd;
     position: absolute;
     left: 50%;
     transform: translate(-50%, -50%);
+
     img {
       height: 100%;
       width: 100%;

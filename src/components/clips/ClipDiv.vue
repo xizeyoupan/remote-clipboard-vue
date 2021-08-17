@@ -9,7 +9,7 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <clip-btn-bar :clip="clip" v-on="$listeners"></clip-btn-bar>
+          <clip-btn-bar :clip="clip" v-on="$listeners"></clip-btn-bar>
       </el-col>
     </el-row>
   </div>
