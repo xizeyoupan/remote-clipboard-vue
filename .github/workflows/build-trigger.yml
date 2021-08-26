@@ -1,0 +1,20 @@
+on: push
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          HTTP_CODE=$(curl \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.TRIGGER_TOKEN }}" \
+            https://api.github.com/repos/xizeyoupan/remote-clipboard-springboot/dispatches \
+            -d '{"event_type":"VUE_UPDATED"}' \
+            -o /dev/null \
+            -w "%{http_code}")
+
+          if [ "$HTTP_CODE" -eq 204 ]
+          then echo "Request sent successfully."
+          else exit 1
+          fi
