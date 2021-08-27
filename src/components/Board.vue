@@ -76,11 +76,10 @@
 </template>
 
 <script>
-import ClipDiv from "@/components/clips/ClipDiv";
+import ClipDiv from "./clips/ClipDiv";
 import {ab2str, gen_clip, str2ab, upload_text_or_img} from "../utils/util";
 
 const EventSource = require('eventsource');
-
 let es;
 
 
@@ -102,12 +101,11 @@ export default {
       console.log(clipList);
 
       const localUuids = this.data.map(clip => clip.uuid)
-      clipList = clipList.filter(clip => !localUuids.includes(clip.uuid))
+      // clipList = clipList.filter(clip => !localUuids.includes(clip.uuid)) // 过滤本地存在的clip，防止出现两个相同clip
 
       for (const clip of clipList) {
-
         if (clip.clipMode === "CREATED") {
-          this.data.push(clip);
+          if (!localUuids.includes(clip.uuid)) this.data.push(clip);
         } else if ((clip.clipMode === "DELETED")) {
           this.data = this.data.filter(clip => clip.uuid !== clip.uuid)
         }
@@ -133,7 +131,7 @@ export default {
 
       console.log(`newValue`, `oldValue`, newValue, oldValue)
 
-      if (!oldValue) {
+      if (oldValue === 0 && newValue !== 1) { // oldValue 为 0 且 newValue !== 1 ，当后端 clips 不为零，浏览器刷新时
         for (const clip of this.data) {
           await this.download_buffer(clip);
         }
@@ -151,7 +149,6 @@ export default {
         this.upload_buffer(clip);
       } else {
         // 针对图像和文本下载arraybuffer
-
         await this.download_buffer(clip);
       }
 
@@ -222,10 +219,9 @@ export default {
     },
 
     async disconnect() {
-      sessionStorage.clear();
       es.close()
       await this.$http({method: "GET", url: "/connections/close"});
-
+      sessionStorage.clear();
       await this.$router.push("/login");
     },
 

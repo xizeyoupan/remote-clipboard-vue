@@ -28,7 +28,7 @@
               placeholder="密钥"
               type="password"
               prefix-icon="el-icon-lock"
-              @keyup.enter.native="login"
+              @keyup.enter.native="loginWithEnter"
           ></el-input>
         </el-form-item>
         <!-- 按钮 -->
@@ -72,13 +72,15 @@ export default {
     };
   },
   methods: {
-    login() {
+    loginWithEnter() {
       if (!localStorage.getItem("enterKey")) {
         localStorage.setItem("enterKey", `true`);
         this.toAbout();
-        return;
+      } else {
+        this.login();
       }
-
+    },
+    login() {
       this.$refs.loginFormRef.validate(async (valid) => {
             if (!valid) return;
             sessionStorage.clear();
