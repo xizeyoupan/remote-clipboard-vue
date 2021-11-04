@@ -5,6 +5,12 @@
 </template>
 
 <script>
+if (process.env.NODE_ENV === "production") {
+  if (location.protocol !== 'https:') {
+    location.replace(`https:${location.href.substring(location.protocol.length)}`);
+  }
+}
+
 import trianglify from "trianglify";
 
 export default {

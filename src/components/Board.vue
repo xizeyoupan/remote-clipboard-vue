@@ -132,9 +132,9 @@ export default {
       console.log(`newValue`, `oldValue`, newValue, oldValue)
 
       if (oldValue === 0 && newValue !== 1) { // oldValue 为 0 且 newValue !== 1 ，当后端 clips 不为零，浏览器刷新时
-        for (const clip of this.data) {
-          await this.download_buffer(clip);
-        }
+        Promise.all(this.data.map(clip => this.download_buffer(clip))).then((values) => {
+        })
+
         return;
       }
 
@@ -249,7 +249,7 @@ export default {
           const blob = new Blob([axiosResponse.data], {type: clip.contentType});
           const link = document.createElement('a');
           link.href = URL.createObjectURL(blob);
-          link.download = clip.filename;
+          link.download = clip.fileName;
           link.click();
           URL.revokeObjectURL(link.href);
         }
