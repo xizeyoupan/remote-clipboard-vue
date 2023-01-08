@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>remote-clipboard</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script src='https://unpkg.com/trianglify@^4/dist/trianglify.bundle.js'></script>
+  <script>
+    const pattern = trianglify({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+    const canvas = pattern.toCanvas();
+    canvas.id = "lowpoly";
+    document.body.appendChild(canvas);
+  </script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
