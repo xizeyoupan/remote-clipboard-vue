@@ -99,11 +99,10 @@ const upload_from_input = () => {
 const upload = async (clip) => {
   upload_to_oss(config, clip, async (success) => {
     proxy.$message.success("上传到OSS成功");
-    const buffer = clip.buffer;
-    delete clip.buffer;
+    const clip_info = Object.assign({}, clip);
+    delete clip_info.buffer;
     try {
-      const resp = await proxy.$http({ method: "POST", url: "/clip/add", data: clip });
-      clip.buffer = buffer;
+      const resp = await proxy.$http({ method: "POST", url: "/clip/add", data: clip_info });
       clip.progress.percentage = 100;
       clip.progress.status = "success";
       proxy.$message.success("上传到数据库成功😘");
