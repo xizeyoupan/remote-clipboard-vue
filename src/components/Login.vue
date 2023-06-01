@@ -18,9 +18,9 @@
         </el-form-item>
         <!-- 按钮 -->
         <el-button-group class="login_btns">
-          <el-button class="btn" type="primary" @click="login(loginFormRef)" plain>连接！
+          <el-button :disabled="loginBtnDisable" class="btn" type="primary" @click="login(loginFormRef)" plain>连接！
           </el-button>
-          <el-button class="btn" type="info" plain @click="register(loginFormRef)">注册
+          <el-button :disabled="registerBtnDisable" class="btn" type="info" plain @click="register(loginFormRef)">注册
           </el-button>
         </el-button-group>
       </el-form>
@@ -32,7 +32,12 @@
 import { ref, reactive, getCurrentInstance } from 'vue';
 const { proxy } = getCurrentInstance();
 
+import { ElMessage } from 'element-plus'
+import 'element-plus/es/components/message/style/css'
+
 const loginFormRef = ref();
+const loginBtnDisable = ref(false);
+const registerBtnDisable = ref(false);
 
 const loginForm = reactive({
   username: "",
@@ -60,13 +65,16 @@ const login = async (formRef) => {
   await formRef.validate(async (valid, fields) => {
     if (!valid) return;
     try {
+      loginBtnDisable.value = true;
       const res = await proxy.$http({ method: "POST", url: "/user", data: loginForm });
       await proxy.$router.push("/board");
-      return proxy.$message.success("登录成功！");
+      return ElMessage.success("登录成功！");
     } catch (error) {
       console.log(error)
       const msg = error.response.data.msg;
-      return proxy.$message.error(msg);
+      return ElMessage.error(msg);
+    } finally {
+      loginBtnDisable.value = false;
     }
   }
   );
@@ -76,11 +84,14 @@ const register = async (formRef) => {
   await formRef.validate(async (valid, fields) => {
     if (!valid) return;
     try {
+      registerBtnDisable.value = true;
       const res = await proxy.$http({ method: "POST", url: "/user/add", data: loginForm });
-      return proxy.$message.success("注册成功，可以登录o((>ω< ))o");
+      return ElMessage.success("注册成功，可以登录o((>ω< ))o");
     } catch (error) {
       const msg = error.response.data.msg;
-      return proxy.$message.error(msg);
+      return ElMessage.error(msg);
+    } finally {
+      registerBtnDisable.value = false;
     }
   }
   );

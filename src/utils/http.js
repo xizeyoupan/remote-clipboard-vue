@@ -2,7 +2,7 @@ import axios from "axios";
 import router from "../router";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL + "/api/v1";
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = import.meta.env.DEV;
 
 axios.interceptors.response.use(response => {
     return response;
